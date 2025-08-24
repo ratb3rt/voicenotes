@@ -9,3 +9,6 @@ soundfile
 aiosqlite
 aiofiles
 httpx
+adafruit-circuitpython-ssd1306
+Pillow
+RPi.GPIO
