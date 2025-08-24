@@ -6,7 +6,7 @@ from typing import Dict, Any, List
 # Wrapper around whisper.cpp CLI for JSON with word timestamps
 # Assumes binary supports -oj (output json) and -of (output base name)
 
-def run_whisper(in_wav: Path, binary: Path, model: Path, language: str, beam_size: int, threads: int, vad: bool) -> Dict[str, Any]:
+def run_whisper(in_wav: Path, binary: Path, model: Path, language: str, beam_size: int, threads: int, vad: bool, vad_model: Path = None) -> Dict[str, Any]:
     out_json = in_wav.with_suffix("")  # whisper adds .json when -oj used
     cmd = [
         str(binary), "-m", str(model), "-f", str(in_wav),
@@ -14,7 +14,7 @@ def run_whisper(in_wav: Path, binary: Path, model: Path, language: str, beam_siz
         "-bs", str(beam_size), "-t", str(threads)
     ]
     if vad:
-        cmd += ["--vad"]
+        cmd += ["--vad", "--vad-model", vad_model]
     subprocess.run(cmd, check=True)
     data = json.loads((Path(str(out_json)) .with_suffix(".json")).read_text())
     return data

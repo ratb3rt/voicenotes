@@ -8,8 +8,8 @@ User=pi
 Group=pi
 Environment=VENV=/opt/voicenotes/.venv
 Environment=APPDIR=/opt/voicenotes
-Environment=CONFIG=/var/lib/voicenotes/config.yaml
-ExecStartPre=/bin/mkdir -p /var/lib/voicenotes
+Environment=CONFIG=/opt/voicenotes/config.yaml
+ExecStartPre=/bin/mkdir -p /opt/voicenotes
 # Mount the block device under /media/usb/<kernel>
 ExecStartPre=/bin/mkdir -p /media/usb/%%i
 ExecStartPre=/bin/mount /dev/%%i /media/usb/%%i

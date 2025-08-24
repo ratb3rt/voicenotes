@@ -6,5 +6,5 @@ Type=oneshot
 User=pi
 Group=pi
 WorkingDirectory=/opt/voicenotes
-Environment=CONFIG=/var/lib/voicenotes/config.yaml
+Environment=CONFIG=/opt/voicenotes/config.yaml
 ExecStart=/opt/voicenotes/.venv/bin/python importer.py --retention --config $CONFIG

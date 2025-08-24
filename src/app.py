@@ -3,15 +3,24 @@ import asyncio
 import json
 from pathlib import Path
 import time
+from datetime import datetime
 
 import yaml
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
+from starlette.templating import Jinja2Templates
 
 from db import connect
 from importer import Importer
+
+# Define the datetime filter
+def datetime_filter(value: int) -> str:
+    """Convert an integer timestamp to a formatted date string."""
+    try:
+        return datetime.fromtimestamp(value).strftime('%Y-%m-%d %H:%M:%S')
+    except (ValueError, TypeError):
+        return "Invalid date"
 
 app = FastAPI()
 
@@ -21,14 +30,18 @@ base_dir = Path(__file__).parent
 (templates_dir := base_dir / "templates").mkdir(exist_ok=True)
 app.mount("/static", StaticFiles(directory=str(app_dir)), name="static")
 templates = Jinja2Templates(directory=str(templates_dir))
+templates.env.filters["datetime"] = datetime_filter
 
-CFG = None
+default_config_path = base_dir / "config.yaml"
+
 IMP: Importer|None = None
 
 def load_cfg(path: str):
     global CFG, IMP
     CFG = yaml.safe_load(Path(path).read_text())
     IMP = Importer(path)
+
+load_cfg(str(default_config_path))
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
@@ -51,7 +64,7 @@ async def recording(request: Request, rid: str):
         "request": request,
         "id": row[0],
         "audio_path": f"/audio/{row[0]}",
-        "imported_at": time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(row[3])),
+        "imported_at": row[3],
         "duration": row[4],
         "sentences": payload.get("sentences", []),
     })

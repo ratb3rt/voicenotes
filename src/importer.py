@@ -45,7 +45,7 @@ class Importer:
                 async for row in cur:
                     existing.add(row[0])
 
-            for wav in sorted(src_root.rglob('*.wav')):
+            for wav in sorted(src_root.rglob('[0-9]*.[wW][aA][vV]')):
                 if wav.suffix.lower() in IGNORED_EXT:
                     continue
                 st = wav.stat()
@@ -70,7 +70,8 @@ class Importer:
                     self.cfg['whisper']['language'],
                     self.cfg['whisper']['beam_size'],
                     self.cfg['whisper']['max_threads'],
-                    self.cfg['whisper']['vad']
+                    self.cfg['whisper']['vad'],
+                    self.cfg['whisper'].get("vad_model")
                 )
                 sentences = words_to_sentences(wjson)
                 payload = {"words_json": wjson, "sentences": sentences}

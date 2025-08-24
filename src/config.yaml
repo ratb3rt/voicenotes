@@ -10,8 +10,8 @@ mount_base: "/media/pendant"
 subdir: "RECORD/"                # Subdirectory to scan inside the USB root
 
 # Local storage for processed artifacts
-output_dir: "/var/lib/voicenotes"
-db_path: "/var/lib/voicenotes/recordings.db"
+output_dir: "/opt/voicenotes"
+db_path: "/opt/voicenotes/recordings.db"
 
 # Silence trimming (ffmpeg silenceremove)
 trim:
@@ -23,6 +23,7 @@ trim:
 whisper:
   binary: "/opt/whisper.cpp/build/bin/whisper-cli"
   model: "/opt/whisper.cpp/models/ggml-base.en.bin"
+  vad_model: "/opt/whisper.cpp/models/ggml-silero-v5.1.2.bin"
   language: "en"
   beam_size: 5
   vad: true                    # enable built-in VAD for better timestamps
