@@ -8,21 +8,22 @@
   <style>
     .sent { margin: 0.25rem 0; }
     .ts { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; opacity: .7; margin-right: .5rem; }
+    pre { background: #f4f4f4; padding: 1rem; border-radius: 5px; overflow-x: auto; }
   </style>
 </head>
 <body>
   <main class="wrap">
     <a href="/">← Back</a>
     <h1>Recording</h1>
-    <p><b>Imported:</b> {{ imported_at }} · <b>Duration:</b> {{ '%.1f' % duration }}s</p>
+    <p><b>Imported:</b> {{ imported_at | datetime }} · <b>Duration:</b> {{ '%.1f' % duration }}s</p>
     <audio controls src="{{ audio_path }}"></audio>
     <h2>Transcription</h2>
     <div>
       {% for s in sentences %}
-        <div class="sent"><span class="ts">[{{ '%.2f' % s.start }} – {{ '%.2f' % s.end }}]</span> {{ s.text }}</div>
+        <div class="sent"><span class="ts">[{{ s.timestamps.from }} – {{ s.timestamps.to }}]</span> {{ s.text }}</div>
       {% endfor %}
     </div>
-    <form method="post" action="/recordings/{{ id }}/delete" onsubmit="return confirm('Delete this recording?')">
+   <form method="post" action="/recordings/{{ id }}/delete" onsubmit="return confirm('Delete this recording?')">
       <button>Delete this recording</button>
     </form>
   </main>

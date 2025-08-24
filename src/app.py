@@ -66,7 +66,7 @@ async def recording(request: Request, rid: str):
         "audio_path": f"/audio/{row[0]}",
         "imported_at": row[3],
         "duration": row[4],
-        "sentences": payload.get("sentences", []),
+        "sentences": payload.get("words_json", {}).get("transcription", []),
     })
 
 @app.get("/audio/{rid}")
@@ -84,6 +84,32 @@ async def delete_rec(rid: str):
         await db.execute("UPDATE recordings SET deleted=1 WHERE id=?", (rid,))
         await db.commit()
     return {"ok": True}
+
+@app.get("/recordings/{id}")
+async def get_recording(request: Request, id: int):
+    # Example paths for the audio and JSON files
+    audio_path = f"static/audio/{id}.wav"
+    json_path = Path(f"static/audio/{id}.json")
+
+    # Read the JSON file
+    if json_path.exists():
+        with open(json_path, "r") as f:
+            json_data = json.load(f)
+    else:
+        json_data = {"error": "JSON file not found"}
+    print(json_data)
+    # Example data for rendering
+    data = {
+        "request": request,
+        "id": id,
+        "imported_at": "2025-08-24 12:00:00",
+        "duration": 12.5,
+        "audio_path": f"/{audio_path}",
+        "sentences": [
+            json_data
+        ],
+    }
+    return templates.TemplateResponse("recording.html", data)
 
 # Background tasks for nightly retention if running as server
 async def retention_job():
