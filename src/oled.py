@@ -20,7 +20,7 @@ def display_message(disp, message):
     height = disp.height
     image = Image.new("1", (width, height))
     draw = ImageDraw.Draw(image)
-    font = ImageFont.load_default()
+    font = ImageFont.load_default(size=20)
 
     # Clear the screen
     draw.rectangle((0, 0, width, height), outline=0, fill=0)
@@ -47,6 +47,9 @@ def main():
 
     # Keep the message on screen for a while
     time.sleep(5)
+
+    disp.fill(0)  # Clear the display
+    disp.show()
 
 if __name__ == "__main__":
     main()
