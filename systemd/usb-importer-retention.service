@@ -1,0 +1,10 @@
+[Unit]
+Description=Run retention cleanup
+
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/opt/voicenotes
+Environment=CONFIG=/var/lib/voicenotes/config.yaml
+ExecStart=/opt/voicenotes/.venv/bin/python importer.py --retention --config $CONFIG

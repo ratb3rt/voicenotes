@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+watchdog
+pydantic[dotenv]
+jinja2
+python-ulid
+pyyaml
+soundfile
+aiosqlite
+aiofiles
+httpx

@@ -1,0 +1,38 @@
+## Installation (Raspberry Pi OS / Debian)
+
+```bash
+sudo apt update
+sudo apt install -y ffmpeg git python3 python3-venv python3-pip sqlite3 usbutils udisks2 jq
+
+# (Optional, faster transcription models):
+# Build whisper.cpp for ARM
+sudo apt install -y build-essential cmake
+cd /opt && sudo git clone https://github.com/ggerganov/whisper.cpp && cd whisper.cpp
+sudo cmake -B build -S . -DWHISPER_NO_ACCELERATE=ON
+sudo cmake --build build -j$(nproc)
+# Get a model (tiny or small for Pi; base.en is a good tradeoff):
+sudo ./models/download-ggml-model.sh base.en
+# Binaries will sit in /opt/whisper.cpp/build/bin and model in /opt/whisper.cpp/models
+```
+
+Python env + deps:
+
+```bash
+cd /opt && sudo git clone https://example.local/voicenotes.git  # (or your repo path)
+cd /opt/voicenotes
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install fastapi uvicorn[standard] watchdog pydantic[dotenv] jinja2 python-ulid pyyaml soundfile aiosqlite aiofiles httpx
+```
+
+> If you prefer system Python, drop the venv and adjust the systemd unit `Environment` entries accordingly.
+
+
+Install the udev rule:
+
+```bash
+sudo cp systemd/99-usb-wav.rules /etc/udev/rules.d/
+sudo udevadm control --reload
+```
+

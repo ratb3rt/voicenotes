@@ -1,0 +1,20 @@
+[Unit]
+Description=USB WAV importer for device %%i
+After=systemd-udevd.service dev-%%i.device
+
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+Environment=VENV=/opt/voicenotes/.venv
+Environment=APPDIR=/opt/voicenotes
+Environment=CONFIG=/var/lib/voicenotes/config.yaml
+ExecStartPre=/bin/mkdir -p /var/lib/voicenotes
+# Mount the block device under /media/usb/<kernel>
+ExecStartPre=/bin/mkdir -p /media/usb/%%i
+ExecStartPre=/bin/mount /dev/%%i /media/usb/%%i
+ExecStart=%h/.venv/bin/python %h/app.py --once --mount /media/usb/%%i --config $CONFIG
+ExecStopPost=/bin/umount /media/usb/%%i
+
+[Install]
+WantedBy=multi-user.target

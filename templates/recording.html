@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Recording {{ id }}</title>
+  <link rel="stylesheet" href="/static/site.css" />
+  <style>
+    .sent { margin: 0.25rem 0; }
+    .ts { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; opacity: .7; margin-right: .5rem; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a href="/">← Back</a>
+    <h1>Recording</h1>
+    <p><b>Imported:</b> {{ imported_at }} · <b>Duration:</b> {{ '%.1f' % duration }}s</p>
+    <audio controls src="{{ audio_path }}"></audio>
+    <h2>Transcription</h2>
+    <div>
+      {% for s in sentences %}
+        <div class="sent"><span class="ts">[{{ '%.2f' % s.start }} – {{ '%.2f' % s.end }}]</span> {{ s.text }}</div>
+      {% endfor %}
+    </div>
+    <form method="post" action="/recordings/{{ id }}/delete" onsubmit="return confirm('Delete this recording?')">
+      <button>Delete this recording</button>
+    </form>
+  </main>
+</body>
+</html>

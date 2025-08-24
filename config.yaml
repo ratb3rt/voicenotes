@@ -1,0 +1,36 @@
+# Identify the target USB device
+usb:
+  # Use `lsusb -v` or `udevadm info --attribute-walk --name=/dev/sdX`
+  id_vendor: "20d6"           # Example: SanDisk
+  id_product: "2101"
+  serial: "CA4512482ADF0FEEEE"
+
+# Where the device gets mounted (udev/service passes this in too)
+mount_base: "/media/pendant"
+subdir: "RECORD/"                # Subdirectory to scan inside the USB root
+
+# Local storage for processed artifacts
+output_dir: "/var/lib/voicenotes"
+db_path: "/var/lib/voicenotes/recordings.db"
+
+# Silence trimming (ffmpeg silenceremove)
+trim:
+  threshold_db: -35            # below this is considered silence
+  min_silence_len_ms: 500      # leading/trailing silence length
+  keep_silence_ms: 100         # pad after trimming to avoid cut words
+
+# Transcription (whisper.cpp)
+whisper:
+  binary: "/opt/whisper.cpp/build/bin/whisper-cli"
+  model: "/opt/whisper.cpp/models/ggml-base.en.bin"
+  language: "en"
+  beam_size: 5
+  vad: true                    # enable built-in VAD for better timestamps
+  max_threads: 4
+
+# Retention
+retention_days: 7
+
+# Web
+listen_host: "0.0.0.0"
+listen_port: 8080

@@ -1,0 +1,6 @@
+# Match a specific USB mass-storage by VID:PID:SERIAL
+ACTION=="add", SUBSYSTEM=="block", ENV{ID_BUS}=="usb", \
+  ENV{ID_VENDOR_ID}=="20d6", ENV{ID_MODEL_ID}=="2101", \
+  ENV{ID_SERIAL_SHORT}=="CA4512482ADF0FEEEE", \
+  ENV{ID_FS_USAGE}=="filesystem", \
+  TAG+="systemd", ENV{SYSTEMD_WANTS}="voicenotes@%k.service"
