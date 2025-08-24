@@ -77,7 +77,6 @@ fi
 # ---- Reload daemons ----
 echo "[*] Reloading systemd and udev"
 sudo systemctl daemon-reload
-sudo udevadm control --reload
 
 # ---- Enable & start services if present ----
 if [[ -f "$SYSTEMD_DIR/$MAIN_SERVICE" ]]; then

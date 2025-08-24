@@ -2,8 +2,9 @@ import argparse
 import asyncio
 import json
 from pathlib import Path
-import time
+import os
 from datetime import datetime
+
 
 import yaml
 from fastapi import FastAPI, HTTPException, Request
@@ -123,11 +124,13 @@ async def retention_job():
 # CLI entrypoint for one-shot import (udev‑triggered)
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", required=True)
+    parser.add_argument("--config")
     parser.add_argument("--once", action="store_true")
     parser.add_argument("--mount", help="Mount path when triggered by udev")
     args = parser.parse_args()
 
+    if not args.config:
+        args.config = os.environ.get("CONFIG_PATH", str(default_config_path))
     CFG_PATH = args.config
     load_cfg(CFG_PATH)
 
